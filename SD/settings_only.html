@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="favicon.ico" type="image/x-icon">
+	<style>
+		.container{
+			display: flex;
+			justify-content: center;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		
+		<table>
+			<tbody>
+				<tr>
+					<td colspan="2" align="center" id="notification" style="background-color:#FFFFFF;height:30px;">
+					</td>
+				<tr>
+				<tr>
+					<td>
+						Наименование WI-FI сети:
+					</td>
+					<td>
+						<input id="ssid" />
+					</td>
+				<tr>
+				<tr>
+					<td>
+						Пароль от WI-FI сети:
+					</td>
+					<td>
+						<input id="password" />
+					</td>
+				<tr>
+				<tr>
+					<td>
+						Время подключения<br/>к сети WI-FI сети:
+					</td>
+					<td>
+						<input style="width:35px;" id="count" /> мс.
+					</td>
+				<tr>
+				<tr>
+					<td>
+						MAC адрес устройста:
+					</td>
+					<td>
+						<input style="width:35px;" id="mac_1" /> <input style="width:35px;" id="mac_2" /> <input style="width:35px;" id="mac_3" /> <input style="width:35px;" id="mac_4" /> <input style="width:35px;" id="mac_5" /> <input style="width:35px;" id="mac_6" />
+					</td>
+				<tr>
+				<tr>
+					<td>
+						IP по умолчанию:
+					</td>
+					<td>
+						<input style="width:35px;" maxlength="3" class="ipaddress" id="ip_1" /> <input style="width:35px;" maxlength="3" class="ipaddress" id="ip_2" /> <input style="width:35px;" maxlength="3" class="ipaddress" id="ip_3" /> <input style="width:35px;" maxlength="3" class="ipaddress" id="ip_4" />
+					</td>
+				<tr>
+				<tr>
+					<td>
+						IP адрес шлюза сети:
+					</td>
+					<td>
+						<input style="width:35px;" maxlength="3" class="ipaddress" id="gateway_1" /> <input style="width:35px;" maxlength="3" class="ipaddress" id="gateway_2" /> <input style="width:35px;" maxlength="3" class="ipaddress" id="gateway_3" /> <input style="width:35px;" maxlength="3" class="ipaddress" id="gateway_4" />
+					</td>
+				<tr>
+				<tr>
+					<td>
+						Маска сети:
+					</td>
+					<td>
+						<input style="width:35px;" maxlength="3" class="ipaddress" id="subnet_1" /> <input style="width:35px;" maxlength="3" class="ipaddress" id="subnet_2" /> <input style="width:35px;" maxlength="3" class="ipaddress" id="subnet_3" /> <input style="width:35px;" maxlength="3" class="ipaddress" id="subnet_4" />
+					</td>
+				<tr>
+				<tr>
+					<td>
+						IP адрес ДНС сервера:
+					</td>
+					<td>
+						<input style="width:35px;" maxlength="3" class="ipaddress" id="dns_1" /> <input style="width:35px;" maxlength="3" class="ipaddress" id="dns_2" /> <input style="width:35px;" maxlength="3" class="ipaddress" id="dns_3" /> <input style="width:35px;" maxlength="3" class="ipaddress" id="dns_4" />
+					</td>
+				<tr>
+				<tr>
+					<td>
+						Порт:
+					</td>
+					<td>
+						<input style="width:35px;" id="port" />
+					</td>
+				<tr>
+				<tr>
+					<td style="text-align:right;">
+						<input type="submit" id="save" value="Сохранить" />
+					</td>
+					<td>
+					</td>
+				<tr>
+				
+			</tbody>
+		</table>
+	</div>
+	<script type="application/javascript">
+	function clear() {
+		document.getElementById('notification').innerHTML 			= '';
+		document.getElementById('notification').style.background 	= '#FFFFFF';
+	}
+	
+	document.getElementById('save').onclick = function()
+	{
+		var SSID 				= document.getElementById("ssid").value;
+		var PASSWORD 			= document.getElementById("password").value;
+		var CONNECTED_COUNT 	= document.getElementById("count").value;
+		var MAC 				= document.getElementById("mac_1").value + ',' + document.getElementById("mac_2").value + ',' + document.getElementById("mac_3").value + ',' + document.getElementById("mac_4").value + ',' + document.getElementById("mac_5").value + ',' + document.getElementById("mac_6").value;
+		var IP 					= document.getElementById("ip_1").value + ',' + document.getElementById("ip_2").value + ',' + document.getElementById("ip_3").value + ',' + document.getElementById("ip_4").value;
+		var GATEWAY 			= document.getElementById("gateway_1").value + ',' + document.getElementById("gateway_2").value + ',' + document.getElementById("gateway_3").value + ',' + document.getElementById("gateway_4").value;
+		var SUBNET 				= document.getElementById("subnet_1").value + ',' + document.getElementById("subnet_2").value + ',' + document.getElementById("subnet_3").value + ',' + document.getElementById("subnet_4").value;
+		var DNS 				= document.getElementById("dns_1").value + ',' + document.getElementById("dns_2").value + ',' + document.getElementById("dns_3").value + ',' + document.getElementById("dns_4").value;
+		var PORT 				= document.getElementById("port").value;
+		
+		var trueRequest = new XMLHttpRequest();
+		trueRequest.open('GET', '/setting/' + SSID + '/' + PASSWORD + '/' + CONNECTED_COUNT + '/' + MAC + '/' + IP + '/' + GATEWAY + '/' + SUBNET + '/' + DNS + '/' + PORT, true);
+		trueRequest.onload = function() {
+			if (this.status == 200){
+				document.getElementById('notification').innerHTML 			= '<div>Сохранено!</div>';
+				document.getElementById('notification').style.background 	= '#00FF00';
+				setTimeout(() => {
+				  clear();
+				}, 1000);
+			}
+		}
+		trueRequest.send();
+	}	
+
+	const inputs = Array.prototype.slice.call(
+		document.querySelectorAll('.ipaddress')
+	);
+
+	inputs.forEach((input) => {
+		input.addEventListener('keyup', (event) => {
+			if (input.value > 255) {
+				input.value = 255;
+			}
+		});
+		input.addEventListener('keypress', (event) => {
+			if (!(event.keyCode < 48 || event.keyCode > 57)) { // Only allow numbers
+				if (input.value.length >= input.maxLength) {
+					event.preventDefault();
+					focusNext();
+				}
+			} else {
+				event.returnValue = false;
+			}
+		});
+	});
+    
+	function focusNext() {
+		const currInput 		= document.activeElement;
+		const currInputIndex 	= inputs.indexOf(currInput);
+		const nextinputIndex 	= (currInputIndex + 1) % inputs.length;
+		const input 			= inputs[nextinputIndex];
+		input.focus();
+	}
+	function load() {
+		var trueRequest = new XMLHttpRequest();
+		trueRequest.open('GET', '/loadsetting', true);
+		trueRequest.onload = function() {
+			JSON.parse(this.response, function (key, value) {
+				if (key == 'SSID'){
+					document.getElementById("ssid").value = value;
+				}
+				if (key == 'PASSWORD'){
+					document.getElementById("password").value = value;
+				}
+				if (key == 'CONNECTED_COUNT'){
+					document.getElementById("count").value = value;
+				}
+				if (key == 'MAC'){
+					document.getElementById("mac_1").value = value.split(',')[0];
+					document.getElementById("mac_2").value = value.split(',')[1];
+					document.getElementById("mac_3").value = value.split(',')[2];
+					document.getElementById("mac_4").value = value.split(',')[3];
+					document.getElementById("mac_5").value = value.split(',')[4];
+					document.getElementById("mac_6").value = value.split(',')[5];
+				}
+				if (key == 'IP'){
+					document.getElementById("ip_1").value = value.split(',')[0];
+					document.getElementById("ip_2").value = value.split(',')[1];
+					document.getElementById("ip_3").value = value.split(',')[2];
+					document.getElementById("ip_4").value = value.split(',')[3];
+				}
+				if (key == 'GATEWAY'){
+					document.getElementById("gateway_1").value = value.split(',')[0];
+					document.getElementById("gateway_2").value = value.split(',')[1];
+					document.getElementById("gateway_3").value = value.split(',')[2];
+					document.getElementById("gateway_4").value = value.split(',')[3];
+				}
+				if (key == 'SUBNET'){
+					document.getElementById("subnet_1").value = value.split(',')[0];
+					document.getElementById("subnet_2").value = value.split(',')[1];
+					document.getElementById("subnet_3").value = value.split(',')[2];
+					document.getElementById("subnet_4").value = value.split(',')[3];
+				}
+				if (key == 'DNS'){
+					document.getElementById("dns_1").value = value.split(',')[0];
+					document.getElementById("dns_2").value = value.split(',')[1];
+					document.getElementById("dns_3").value = value.split(',')[2];
+					document.getElementById("dns_4").value = value.split(',')[3];
+				}
+				if (key == 'PORT'){
+					document.getElementById("port").value = value;
+				}
+			});
+		};
+		trueRequest.send();
+	}
+	load();
+	</script>
+</body>
+</html>

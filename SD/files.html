@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <script src="/js/chart.js"></script>
+	<script src="/js/hammer.min.js"></script>
+	<script src="/js/chartjs-plugin-zoom.min.js"></script>
+	<style>
+		#download{
+				position:absolute;
+				right:1%;
+				display:inline-block;
+				color: #000;
+				text-decoration:none;
+				border-radius:3px;
+				
+			}
+		@media screen and (max-width:600px) {
+			#download{
+				margin-top:0;
+			}
+		}
+		@media screen and (min-width:600px) {
+			#download{
+				margin-top:2rem;
+			}
+		}
+		#menu {
+			text-align: right;
+			
+		}
+		#menu a{
+			margin-top:1rem;
+			font-family: 'Open Sans', sans-serif;
+			font-size: 1rem;
+			line-height: 1.5;
+			color: #000;
+			font-weight: 100;
+			-webkit-font-smoothing: antialiased;
+			-webkit-text-size-adjust: 100%;
+			bottom: 10px;
+			letter-spacing: 4px;
+			font-size: 12px;
+			text-transform: uppercase;
+			text-decoration: none;
+		}
+		#menu a {
+		  display: inline-block;
+		  position: relative;
+		  padding: 0 1rem 0 1rem;
+		  transition: color .35s ease;
+		}
+		#menu a:before {
+		  content: '';
+		  display: block;
+		  position: absolute;
+		  left: 0;
+		  bottom: 0;
+		  height: 2px;
+		  width: 0;
+		  transition: width 0s ease, background .35s ease;
+		}
+		#menu a:after {
+		  content: '';
+		  display: block;
+		  position: absolute;
+		  right: 0;
+		  bottom: 0;
+		  height: 2px;
+		  width: 0;
+		  background: #000;
+		  transition: width .35s ease;
+		}
+		#menu a:hover:before {
+		  width: 100%;
+		  background: #000;
+		  transition: width .35s ease;
+		}
+		#menu a:hover:after {
+		  width: 100%;
+		  background: transparent;
+		  transition: all 0s ease;
+		}
+	</style>
+</head>
+<body>
+	<div id="menu">
+		<a href="/">Графики онлайн</a> 
+		<a href="/logs">Логи</a> 
+		<a href="/settings">Настройки</a>
+	</div>
+	<a download="data.csv" id="download" href="#">
+		<img height="20px" width="20px" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAABDElEQVR4nO2X/QqCQBDE5ylMev8XKf+KoBKij6fZEFY4xIv1Wrq15gdLgt6442x2AcTMDsARP4BorR6hkWAwkWgwkWgwkWgwkWgwkWiESESM1Rk0cnQL7lOM9QZ7g0YII6vXkAhNgEaCPU0wkWBPE0zkTxM5AbgAaAs0hjU9gINDHx8L9HrNPWMmp9HqmuHcOYKRBsBVr3sC2Bo0Nsmax8yaar/s78xMNZaa+PoWJWcm1SgxUWWvNWdm1Cg1UW3TmH6Jx8/0OPdS8O7DRSBNJq2lSYTYxk/NlJoI8X9kGKGbVluxD3hsLxotrN2IB0IjChNxRjhaCkfLGeFoKRwtZ4SjpUiwQim1GzcbeQG1AFqJ0C8cGAAAAABJRU5ErkJggg==">
+		Скачать данные
+	</a>
+    <canvas id="grafica"></canvas>
+    <script type="application/javascript">
+	const VOLT_LABEL		= 'Напряжение';
+	const AMP_LABEL 		= 'Сила тока';
+	const WATT_LABEL 		= 'Ватты';
+	const TEMPERATURE_LABEL	= 'Температура';
+	
+	const DATE 				= [];
+	const VOLTS 			= [];
+	const AMPS 				= [];
+	const WATTS 			= [];
+	const TEMPERATURES 		= [];
+	
+	let data 				= []
+	// Получение ссылки на элемент canvas в DOM
+	const $grafica = document.querySelector("#grafica");
+	
+	// Tags - это метки, которые идут по оси X.  
+	tags = [];
+	m = 0; h = 0;
+	for(i=0;i<VOLTS.length;++i)
+	{
+		if (i % 60 == 0 && i > 0)
+			++m;
+		if (m % 60 == 0 && m > 0)
+		{
+			++h;
+			m = 0;
+		}
+		tags[i] = (h > 0 ? h + ":"  : "") + (m > 0 ? m + ":" : "") + (i % 60);
+	}
+	// У нас может быть несколько наборов данных.
+	const VOLT = {
+		label: VOLT_LABEL,
+		data: VOLTS, // Данные представляют собой массив, который должен иметь такое же количество значений, как и количество тегов.
+		backgroundColor: 'rgba(0, 0, 0, 0.2)', // Цвет фона
+		borderColor: 'rgba(0, 0, 0, 1)', // Цвет границы
+		borderWidth: 1,// Толщина границ
+	};
+	const AMP = {
+		label: AMP_LABEL,
+		data: AMPS, // Данные представляют собой массив, который должен иметь такое же количество значений, как и количество тегов.
+		backgroundColor: 'rgba(255, 0, 0, 0.2)',// Цвет фона
+		borderColor: 'rgba(255, 0, 0, 1)',// Цвет границы
+		borderWidth: 1,// Толщина границ
+	};
+	const WATT = {
+		label: WATT_LABEL,
+		data: WATTS, // Данные представляют собой массив, который должен иметь такое же количество значений, как и количество тегов.
+		backgroundColor: 'rgba(0, 255, 0, 0.2)',// Цвет фона
+		borderColor: 'rgba(0, 255, 0, 1)',// Цвет границы
+		borderWidth: 1,// Толщина границ
+	};
+	const TEMPERATURE = {
+		label: TEMPERATURE_LABEL,
+		data: TEMPERATURES, // Данные представляют собой массив, который должен иметь такое же количество значений, как и количество тегов.
+		backgroundColor: 'rgba(0, 0, 255, 0.2)',// Цвет фона
+		borderColor: 'rgba(0, 0, 255, 1)',// Цвет границы
+		borderWidth: 1,// Толщина границ
+	};
+	Chart_YouTube_chevichelov =	
+	new Chart($grafica, {
+		type: 'line',// Тип графики
+		data: {
+			labels: tags,
+			datasets: [
+				VOLT,
+				AMP,
+				WATT,
+				TEMPERATURE
+			]
+		},
+		options: {
+			plugins: {
+				title: {
+					display: true,
+					text: 'Показания прибора youtube.com/@chevichelov'
+				},
+				subtitle: {
+					display: true,
+					text: 'Напряжение: 0.00V  Сила тока: 0.00A  Ватты: 0.00W  Температура: 0.00°C',
+				},
+			    decimation: {
+				   algorithm: 'lttb',
+				   enabled: true,
+				   samples: 20
+				},
+				zoom: {
+					limits: {
+					  y: {
+						min: 0,
+						max: 10
+					  },
+					},
+					rangeMin: {
+						x: 10,
+						y: 200
+
+					},
+					pan: {
+						enabled: true,
+							mode: 'x',
+							speed: 15,
+							threshold: 5,
+							rangeMin: {
+							x: 1
+						},
+						rangeMax: {
+							y: Math.max.apply(Math, data)
+						}
+					},
+					zoom: {
+						wheel: {
+							enabled: true,
+							speed: 0.1
+						},
+						pinch: {
+							enabled: true
+						},
+						mode: "x",
+						speed: 0.1,
+						threshold: 2,
+						sensitivity: 3,
+					}
+				},
+			}
+		},
+		
+	});
+	var MAX_VOLT = 0, MAX_AMP = 0, MAX_WATT = 0, MAX_TEMPERATURE = 0;
+	var url = window.location.pathname.split('/')[2];
+	function load() {
+		var trueRequest = new XMLHttpRequest();
+		trueRequest.open('GET', '/file/' + url, true);
+		trueRequest.onload = function() {
+			JSON.parse(this.response, function (key, value) {
+				if (key == 'VOLT_COLOR'){
+					if (value == "255,255,255"){
+						value = "0,0,0";
+					}
+					Chart_YouTube_chevichelov.data.datasets[0].backgroundColor = 'rgba(' + value + ', 0.2)';
+					Chart_YouTube_chevichelov.data.datasets[0].borderColor = 'rgba(' + value + ', 1)';
+				}
+				if (key == 'AMP_COLOR'){
+					if (value == "255,255,255"){
+						value = "0,0,0";
+					}
+					Chart_YouTube_chevichelov.data.datasets[1].backgroundColor = 'rgba(' + value + ', 0.2)';
+					Chart_YouTube_chevichelov.data.datasets[1].borderColor = 'rgba(' + value + ', 1)';
+				}
+				if (key == 'WATT_COLOR'){
+					if (value == "255,255,255"){
+						value = "0,0,0";
+					}
+					Chart_YouTube_chevichelov.data.datasets[2].backgroundColor = 'rgba(' + value + ', 0.2)';
+					Chart_YouTube_chevichelov.data.datasets[2].borderColor = 'rgba(' + value + ', 1)';
+				}
+				if (key == 'DATE' && !!value){
+					Chart_YouTube_chevichelov.data.labels.push(value);
+					DATE.push(value);
+				}
+				if (key == 'VOLT' && !!value){
+					Chart_YouTube_chevichelov.data.datasets[0].data.push(value);
+					if (MAX_VOLT * 1 < value * 1)
+						MAX_VOLT = value * 1;
+				}
+				
+				if (key == 'AMP' && !!value){
+					Chart_YouTube_chevichelov.data.datasets[1].data.push(value);
+					if (MAX_AMP * 1 < value * 1)
+						MAX_AMP = value * 1;
+				}
+				
+				if (key == 'WATT' && !!value){
+					Chart_YouTube_chevichelov.data.datasets[2].data.push(value);
+					if (MAX_WATT * 1 < value * 1)
+						MAX_WATT = value * 1;
+				}
+				
+				if (key == 'TEMPERATURE' && !!value){
+					Chart_YouTube_chevichelov.data.datasets[3].data.push(value);
+					if (MAX_TEMPERATURE * 1 < value * 1)
+						MAX_TEMPERATURE = value * 1;
+				}
+			});
+			Chart_YouTube_chevichelov.options.plugins.subtitle.text = '  ';
+			Chart_YouTube_chevichelov.options.plugins.subtitle.text += VOLT_LABEL + ': ' + (MAX_VOLT * 1).toFixed(2) + 'V' + (MAX_VOLT * 1 < 10 ? '  ' : '');
+			Chart_YouTube_chevichelov.options.plugins.subtitle.text += AMP_LABEL + ': ' + (MAX_AMP * 1).toFixed(2) + 'A' + (MAX_AMP * 1 < 10 ? '  ' : '');
+			Chart_YouTube_chevichelov.options.plugins.subtitle.text += WATT_LABEL + ': ' + (MAX_WATT * 1).toFixed(2) + 'W' + (MAX_WATT * 1 < 10 ? '  ' : '');
+			Chart_YouTube_chevichelov.options.plugins.subtitle.text += TEMPERATURE_LABEL + ': ' + (MAX_TEMPERATURE * 1).toFixed(2) + '°C' + (MAX_TEMPERATURE * 1 < 10 ? '  ' : '');
+			Chart_YouTube_chevichelov.update();
+			
+			//Конвертируем данные в файл
+			var type = 'data:application/octet-stream;base64, ';
+			var text = "DATE;VOLT;AMP;WATT;TEMPERATURE;\r\n";
+			for(i=0;i<Chart_YouTube_chevichelov.data.datasets[0].data.length;++i)
+			{
+				text += (DATE[i] != null ? (DATE[i] + "").replace(' ', '_') : "") + ";" +(Chart_YouTube_chevichelov.data.datasets[0].data[i] != null ? (Chart_YouTube_chevichelov.data.datasets[0].data[i] + "").replace('.', ',') : "") + ";" + (Chart_YouTube_chevichelov.data.datasets[1].data[i] != null ? (Chart_YouTube_chevichelov.data.datasets[1].data[i] + "").replace('.', ',') : "")+ ";" + (Chart_YouTube_chevichelov.data.datasets[2].data[i] != null ? (Chart_YouTube_chevichelov.data.datasets[2].data[i] + "").replace('.', ',') : "") + ";" + (Chart_YouTube_chevichelov.data.datasets[3].data[i] != null ? (Chart_YouTube_chevichelov.data.datasets[3].data[i] + "").replace('.', ',') : "") +";\r\n"
+			}
+			var base = btoa(text);
+			var res = type + base;
+			document.getElementById('download').href = res;
+		};
+		trueRequest.send();
+	};
+	load();
+	</script>
+</body>
+</html>
