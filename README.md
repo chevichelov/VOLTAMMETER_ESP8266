@@ -27,7 +27,9 @@
 
 <h2 align="center">Видео инструкция</h2>
 <div align="center">
-  <a href="https://www.youtube.com/watch?v=tQwCpL5yR5U"><img src="https://img.youtube.com/vi/tQwCpL5yR5U/maxresdefault.jpg" alt="Видео инструкция"></a>
+  <a href="https://www.youtube.com/watch?v=tQwCpL5yR5U"><img src="https://img.youtube.com/vi/tQwCpL5yR5U/maxresdefault.jpg" alt="Видео инструкция">
+  <div>Вольтамперметр на базе ESP8266 с записью данных в лог и передачей их по сети Интернет</div>
+  </a>
 </div>
 
 
