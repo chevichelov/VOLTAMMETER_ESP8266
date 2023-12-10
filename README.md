@@ -26,6 +26,6 @@
 <img src="https://github.com/chevichelov/VOLTAMMETER_ESP8266/blob/main/IMG/BOARD.jpg?raw=true" />
 
 <h2 align="center">Видео инструкция</h2>
-[![Watch the video](https://img.youtube.com/vi/tQwCpL5yR5U/maxresdefault.jpg)](https://youtu.be/tQwCpL5yR5U)
 
-[![Watch the video](https://img.youtube.com/vi/T-D1KVIuvjA/maxresdefault.jpg)](https://youtu.be/T-D1KVIuvjA)
+
+[![Watch the video](https://img.youtube.com/vi/tQwCpL5yR5U/maxresdefault.jpg)](https://youtu.be/T-D1KVIuvjA)
