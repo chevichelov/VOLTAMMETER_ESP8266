@@ -27,3 +27,5 @@
 
 <h2 align="center">Видео инструкция</h2>
 [![Watch the video](https://img.youtube.com/vi/tQwCpL5yR5U/hqdefault.jpg)](https://youtu.be/tQwCpL5yR5U)
+
+[![Watch the video](https://img.youtube.com/vi/T-D1KVIuvjA/maxresdefault.jpg)](https://youtu.be/T-D1KVIuvjA)
