@@ -26,12 +26,8 @@
 <img src="https://github.com/chevichelov/VOLTAMMETER_ESP8266/blob/main/IMG/BOARD.jpg?raw=true" />
 
 <h2 align="center">Видео инструкция</h2>
-<iframe width="560" height="315"
-src="https://www.youtube.com/embed/tQwCpL5yR5U" 
-frameborder="0" 
-allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
-allowfullscreen></iframe>
+<div align="center">
+  <a href="https://www.youtube.com/watch?v=tQwCpL5yR5U"><img src="https://img.youtube.com/vi/tQwCpL5yR5U/0.jpg" alt="Видео инструкция"></a>
+</div>
 
-
-<a href="https://youtu.be/tQwCpL5yR5U"></a>
 
