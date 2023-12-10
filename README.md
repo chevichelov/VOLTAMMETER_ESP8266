@@ -25,4 +25,4 @@
 <h2 align="center">Монтажная схема (в картинках)</h2>
 <img src="https://github.com/chevichelov/VOLTAMMETER_ESP8266/blob/main/IMG/BOARD.jpg?raw=true" />
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/tQwCpL5yR5U?si=-px_2YJ9VeWykkQJ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+[![Watch the video](https://i.stack.imgur.com/Vp2cE.png)](https://youtu.be/tQwCpL5yR5U)
