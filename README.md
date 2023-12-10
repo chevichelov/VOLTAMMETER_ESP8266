@@ -26,4 +26,12 @@
 <img src="https://github.com/chevichelov/VOLTAMMETER_ESP8266/blob/main/IMG/BOARD.jpg?raw=true" />
 
 <h2 align="center">Видео инструкция</h2>
-[![Everything Is AWESOME](https://i.stack.imgur.com/tQwCpL5yR5U.png)](https://youtu.be/tQwCpL5yR5U "Everything Is AWESOME")
+<iframe width="560" height="315"
+src="https://www.youtube.com/embed/tQwCpL5yR5U" 
+frameborder="0" 
+allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+allowfullscreen></iframe>
+
+
+<a href="https://youtu.be/tQwCpL5yR5U"></a>
+
